@@ -17,3 +17,11 @@ lvgl9.5已经移植计入工程，可以使用
 1、lvgl9.5+camera+uart协议。
 2、tinyxml2+freetype可以显示中文简体、中文繁体、英文、马来西亚文、俄文；不能显示韩文、越南文、阿拉伯文。
 3、camera和lvgl9.5冲突，设置lvgl9.5背景透明不可以显示camera
+
+root@TinaLinux:/# find -name "*.ttf"
+./usr/res/font/msyh.ttf
+root@TinaLinux:/# find /usr/lib -name "libfreetype*"
+/usr/lib/libfreetype.so.6
+/usr/lib/libfreetype.so.6.17.0
+
+/home/xiaozhi/Downloads/f133/mx-hxx003/tina5.0-f133/out/f133-mx-hxx/prototype/openwrt/staging_dir/target/usr/lib -lfreetype
