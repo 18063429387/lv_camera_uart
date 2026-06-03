@@ -14,4 +14,6 @@ lvgl 9.5还没有移植进入工程
 lvgl9.5已经移植计入工程，可以使用
 但是 lvgl9.5 + camera 还没测试，这里的透明背景设置可能和lvgl8.3不一样 
 
-此文件 为备份文件
+1、lvgl9.5+camera+uart协议。
+2、tinyxml2+freetype可以显示中文简体、中文繁体、英文、马来西亚文、俄文；不能显示韩文、越南文、阿拉伯文。
+3、camera和lvgl9.5冲突，设置lvgl9.5背景透明不可以显示camera
