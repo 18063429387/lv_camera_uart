@@ -61,6 +61,7 @@ static int lvgl_port_init(void)
 
 static void ui_init(void)
 {
+#if 0
     lv_obj_t *scr = lv_screen_active();
     lv_obj_set_style_bg_color(scr, lv_color_hex(0x20242a), 0);
 
@@ -76,9 +77,34 @@ static void ui_init(void)
         printf("<ERROR> failed to load /usr/res/font/msyh.ttf\n");
     }
 
+#else
+    /* 1. 获取默认显示设备并配置透明支持 */
+    lv_display_t *disp = lv_display_get_default();
+    lv_display_set_color_format(disp, LV_COLOR_FORMAT_ARGB8888); // 启用 Alpha 通道
+
+    /* 2. 获取活动屏幕并设置其背景透明 */
+    lv_obj_t *scr = lv_screen_active();
+    lv_obj_set_style_bg_opa(scr, LV_OPA_TRANSP, LV_PART_MAIN);   // 屏幕背景完全透明
+
+    /* 3. 将底层图层背景也设置为透明 */
+    lv_obj_t *bottom_layer = lv_layer_bottom();
+    lv_obj_set_style_bg_opa(bottom_layer, LV_OPA_TRANSP, LV_PART_MAIN);
+
+    /* 4. 初始化 FreeType 并加载微软雅黑 TTF */
+    lv_freetype_init(256);
+    lv_font_t *cjk_font = lv_freetype_font_create(
+        "/usr/res/font/msyh.ttf",
+        LV_FREETYPE_FONT_RENDER_MODE_BITMAP,
+        16,
+        LV_FREETYPE_FONT_STYLE_NORMAL);
+
+    if (!cjk_font) {
+        printf("<ERROR> failed to load /usr/res/font/msyh.ttf\n");
+    }
+#endif
+
     /* 从.xml加载文本 */
     bvtext_load("chineseSimplified.xml");
-
 
     char cn_text[128];
     char tw_text[128];
