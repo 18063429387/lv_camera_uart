@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<language version="1.0.0" time="2025-10-11">
+	<system>
+		<language-1 name="中文简体" />
+		<language-2 name="中文繁體" />
+		<language-3 name="English" />
+		<language-4 name="한국어" />
+		<language-5 name="Tiếng Việt" />
+		<language-6 name="Bahasa Melayu" />
+		<language-7 name="Русский язык" />
+		<language-8 name="العربية" />
+	</system>
+</language>
