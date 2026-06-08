@@ -1,6 +1,7 @@
 #include "camera_preview.h"
 #include "uart_agreement/uart_agreement_c_api.h"
 #include "../tinyxml2/examples/bvtext_c.h"
+#include "ipc_bridge.h"
 
 #include <stdbool.h>
 #include <signal.h>
@@ -50,6 +51,7 @@ static void myBtn_event(lv_event_t * event)
     if (lv_event_get_code(event) == LV_EVENT_CLICKED) {
         static uint8_t cnt = 0;
         cnt++;
+        ipc_bridge_send_to_biz_str("button_clicked");
         lv_obj_t * label = lv_obj_get_child(btn, 0);
         lv_label_set_text_fmt(label, "Button: %d", cnt);
     }
@@ -195,7 +197,7 @@ static void ui_init(void)
     lv_obj_align(label_ar, LV_ALIGN_TOP_MID, 0, LANG_LABEL_Y_START + 7 * LANG_LABEL_Y_STEP);
 
     // 触摸测试
-#if 0
+#if 1
     lv_obj_t * myBtn = lv_button_create(scr);
     lv_obj_set_size(myBtn, 120, 50);
     lv_obj_set_style_bg_color(myBtn, lv_color_hex(0xDD5A2C), LV_STATE_DEFAULT);
@@ -203,7 +205,7 @@ static void ui_init(void)
     lv_obj_add_event_cb(myBtn, myBtn_event, LV_EVENT_CLICKED, NULL);
 
     lv_obj_t * label_btn = lv_label_create(myBtn);
-    lv_obj_align(label_btn, LV_ALIGN_CENTER, 150, 0);
+    lv_obj_align(label_btn, LV_ALIGN_CENTER, 50, 0);
     lv_label_set_text(label_btn, "Test");
 #endif
 }
@@ -249,12 +251,27 @@ int main(int argc, char *argv[])
         printf("uart_agreement_start failed\n");
     }
 
+    /* 初始化 IPC 双通道 */
+    if (ipc_bridge_init() != 0) {
+        printf("ipc_bridge_init failed\n");
+    }
+
     while (!g_exit_flag) {
         lv_timer_handler();
         camera_preview_poll(5);
+
+        /* 轮询业务进程发来的消息 */
+        char ipc_buf[512];
+        int ipc_len = ipc_bridge_try_recv_from_biz(ipc_buf, sizeof(ipc_buf));
+        if (ipc_len > 0) {
+            printf("[IPC biz->ui] 收到 %d 字节: %s\n", ipc_len, ipc_buf);
+            /* TODO: 根据消息内容更新 UI */
+        }
+
         usleep(1000);
     }
 
+    ipc_bridge_deinit();
     uart_agreement_stop();
     camera_preview_deinit();
     return 0;

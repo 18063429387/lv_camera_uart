@@ -28,8 +28,24 @@ root@TinaLinux:/# find /usr/lib -name "libfreetype*"
 
 添加了触摸，main中有按钮测试
 
-使用qoder尝试移植 cpp-ipc-1.4.1 
+移植 cpp-ipc-1.4.1
+实现双端通信，ui按钮按下发送 ipc_test_biz 信息，同时UI接收 ipc_test_biz 发送的信息
+cd cpp-ipc
+cmake -B build \
+  -DCMAKE_TOOLCHAIN_FILE=../lv_port_linux/user_cross_compile_setup.cmake \
+  -DLIBIPC_BUILD_SHARED_LIBS=OFF \
+  -DLIBIPC_BUILD_TESTS=OFF \
+  -DLIBIPC_BUILD_DEMOS=OFF
+cmake --build build -j$(nproc)
 
+cd lv_port_linux
+rm -rf build
+cmake -B build -DCMAKE_TOOLCHAIN_FILE=./user_cross_compile_setup.cmake
+cmake --build build -j$(nproc)
+
+cd lv_g2d_test/src
+make
+make ipc_test
 
 
 

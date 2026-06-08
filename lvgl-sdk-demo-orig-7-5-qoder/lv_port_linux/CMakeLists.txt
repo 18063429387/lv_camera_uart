@@ -305,6 +305,7 @@ file(GLOB CAMERA_UART_SRC
 add_executable(camera_uart_lvgl
     ${APP_ROOT}/lv_g2d_test/src/main.c
     ${APP_ROOT}/lv_g2d_test/src/camera_preview.c
+    ${APP_ROOT}/lv_g2d_test/src/ipc_bridge.cpp
     ${CAMERA_UART_SRC}
     ${APP_ROOT}/tinyxml2/examples/bvtext.cpp
     ${APP_ROOT}/tinyxml2/examples/bvtext_c.cpp
@@ -319,6 +320,7 @@ target_include_directories(camera_uart_lvgl PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/src/lib
     ${APP_ROOT}/tinyxml2/include
     ${APP_ROOT}/tinyxml2/examples
+    ${APP_ROOT}/cpp-ipc/include
 )
 
 set_target_properties(camera_uart_lvgl PROPERTIES
@@ -326,8 +328,9 @@ set_target_properties(camera_uart_lvgl PROPERTIES
 )
 
 target_link_libraries(camera_uart_lvgl PRIVATE
-    lvgl_linux lvgl m pthread
+    lvgl_linux lvgl m pthread rt
     ${APP_ROOT}/tinyxml2/lib/libtinyxml2.a
+    ${APP_ROOT}/cpp-ipc/build/lib/libipc.a
 )
 
 

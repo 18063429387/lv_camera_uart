@@ -41,7 +41,8 @@ LDFLAGS ?= -lm -lpthread -lrt -ldl $(FREETYPE_LIBS)
 LVGL_LINK_LIBS ?= $(LV_PORT_LIB) $(LVGL_LIB)
 
 MAINSRC := $(wildcard ./*.c)
-CPPSRC := $(wildcard ./uart_agreement/*.cpp) \
+CPPSRC := ./ipc_bridge.cpp \
+          $(wildcard ./uart_agreement/*.cpp) \
           $(wildcard ./uart_agreement/control/*.cpp) \
           $(wildcard ./uart_agreement/dqbuffer/*.cpp) \
           $(wildcard ./uart_agreement/tool/*.cpp) \
@@ -54,6 +55,15 @@ MAINOBJ := $(addprefix $(OBJ_DIR)/, $(patsubst ./%,%,$(MAINSRC:.c=$(OBJEXT))))
 CPPOBJS := $(addprefix $(OBJ_DIR)/, $(patsubst ./%,%,$(CPPSRC:.cpp=$(OBJEXT))))
 
 all: default
+
+# IPC 业务端测试程序（独立编译，不依赖 LVGL）
+ipc_test:
+	@mkdir -p $(BIN_DIR)
+	$(CXX) -std=c++17 -O2 $(CPP_IPC_INC) \
+		ipc_test_biz.cpp $(CPP_IPC_LIB) \
+		-lpthread -lrt \
+		-o $(BIN_DIR)/ipc_test_biz
+	@echo "Built $(BIN_DIR)/ipc_test_biz"
 
 $(OBJ_DIR)/%.o: %.c
 	@mkdir -p $(dir $@)
